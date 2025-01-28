@@ -18,7 +18,7 @@ sumSubjectMarks :: [Report] -> Report
 sumSubjectMarks reports = Report (subject $ head reports) (sum $ map mark reports) (sum $ map total reports)
 
 groupBySubject :: [Report] -> [[Report]]
-groupBySubject reports = map (\aSubject -> [report | report <- reports, aSubject == subject report]) (uniqueSubjects reports) 
+groupBySubject reports = [[report | report <- reports, aSubject == subject report] | aSubject <- uniqueSubjects reports]
 
 groupAndSumReports :: [Report] -> [Report]
 groupAndSumReports reports = map sumSubjectMarks (groupBySubject reports)
