@@ -2,6 +2,7 @@
 Marks in school, college and university are often divided in multiple parts such as assignments projects or exams. Because of this, it is hard to track how well you're doing throughout the year. This terminal app offers an **htop-style** view of the fraction of the mark that you've already earned and the fraction that you've already lost.
 
 Take a look at this example:
+![example](https://github.com/user-attachments/assets/8a1d83d4-40bf-46e5-8720-51ae3cc51576)
 
 In **green** you can see the points that you've already earned and in **red** what you've already lost. Finally the part of the graph that has no color is the part that has'nt been assessed yet.
 
