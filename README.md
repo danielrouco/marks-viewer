@@ -11,6 +11,7 @@ With a quick look you can see that you are doing a very good job in geography bu
 ## Usage
 > [!WARNING]
 > This instructions are deprecated. This program no longer works as it is explained below. This section will be updated as soon as possible.
+
 This app stores all the data in `.txt` files.
 Take a look at this `example.txt`:
 ```
