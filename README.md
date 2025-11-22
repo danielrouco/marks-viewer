@@ -8,12 +8,14 @@ In **green** you can see the points that you've already earned and in **red** wh
 With a quick look you can see that you are doing a very good job in geography but you have to work more on physics. You can also see that in math the big work is already done.
 
 ## Usage
+> [!WARNING]
+> This instructions are deprecated. This program no longer works as it is explained below. This section will be updated as soon as possible.
 This app stores all the data in `.txt` files.
 Take a look at this `example.txt`:
 ```
 english 2 2     // Essay
 math 2 3        // Exercises
-geography 4 4   // Exam    
+geography 4 4   // Exam
 english 3 4     // 1st exam
 math 5 5        // Exam
 physics 2 5     // Project
