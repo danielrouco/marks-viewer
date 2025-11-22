@@ -35,12 +35,13 @@ graph highestMark (Report subj mk ttl weight) =
     ++ "] "
     ++ show highestMark
     ++ replicate (markFieldLength - 6) ' '
-    ++ colorString Bold Green Default (show ((mk / ttl) * weight * highestMark))
-    ++ replicate (markFieldLength - length (show mk)) ' '
+    ++ colorString Bold Green Default (show totalMark)
+    ++ replicate (markFieldLength - length (show totalMark)) ' '
     ++ colorString Bold Red Default (show $ ((ttl - mk) / ttl) * weight * highestMark)
   where
     subjFieldLength = 12
     markFieldLength = 15
+    totalMark = (mk / ttl) * weight * highestMark
     graphLength = 50
     nGreens = round (((mk / ttl) * weight) * graphLength)
     nReds = round (weight * graphLength) - nGreens
