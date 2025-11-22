@@ -9,31 +9,36 @@ In **green** you can see the points that you've already earned and in **red** wh
 With a quick look you can see that you are doing a very good job in geography but you have to work more on physics. You can also see that in math the big work is already done.
 
 ## Usage
-> [!WARNING]
-> This instructions are deprecated. This program no longer works as it is explained below. This section will be updated as soon as possible.
 
 This app stores all the data in `.txt` files.
 Take a look at this `example.txt`:
 ```
-english 2 2     // Essay
-math 2 3        // Exercises
-geography 4 4   // Exam
-english 3 4     // 1st exam
-math 5 5        // Exam
-physics 2 5     // Project
+100
+english 100 100 0.2     // Essay
+math 7 10 0.3           // Exercises
+geography 20 20 0.4     // Exam
+english 6 10 0.4        // 1st exam
+math 40 40 0.5          // Exam
+physics 4 10 0.5        // Project
 ```
-The format of this file is:
+The first line of the file sets the total that will be used to show your marks (10, 100... pi ;))
+
+The format of the rest of lines is:
 ```
-subject_name earned_points total_points
+subject_name mark_out_of_total total weight
 ```
+The `weight` field tells how much this exam counts for the total mark. It is a number between 0 and 1.
+
 These are the mandatory fields, if we add more text on the right it will be ignored so we can use this to write comments as in the example above.
 
 To understand better how the format works let's see an example:
 
-I get a 50 out of 100 in my Math exam. It counts 50% of the final mark. So we have to put our mark out of 5(because the total in this app is 10, so 50% of 10 is 5). That is 2.5 out of 5. So in our `.txt` file we should write:
+I get a `20` out of `30` in my Math exam. It counts 50% of the final mark. So we have to put in the `weight` field `0.5`. So in our `.txt` file we should write:
 ```
-math 2.5 5
+math 20 30 0.5
 ```
+> [!NOTE]
+> You will also need to specify the total that will be used to show your marks at the top of the file
 
 
 ## Running the app
@@ -54,7 +59,8 @@ ghc main.hs
 cat PATH_TO_REPORTS/NAME.txt | PATH_TO_APP/main
 ```
 
-Where I write `PATH_TO_APP` I'm referring to the path to the folder that you've just cloned. With `PATH_TO_REPORTS` I'm referring to the path where you put all the reports (`.txt` files) and with `NAME` to the file name without the `.txt` extension.
+> [!NOTE]
+> Where I write `PATH_TO_APP` I'm referring to the path to the folder that you've just cloned. With `PATH_TO_REPORTS` I'm referring to the path where you put all the reports (`.txt` files) and with `NAME` to the file name without the `.txt` extension.
 
 ## Some tips
 We've seen that a way to add, edit and remove values is simply to edit the source file. But this can become a little bit tedious, so we can write a few lines of bash to make it easier. For example, we could add these lines to the `.bashrc`:
@@ -68,7 +74,7 @@ marks(){
 This function will display the graph view of the file that we pass as an argument. So now if we type `marks example` in the terminal we will get the graph view of the file: `PATH_TO_REPORTS/example.txt`.
 ```sh
 amarks(){
-    echo "$2 $3 $4      // $5" >> PATH_TO_REPORTS/$1.txt
+    echo "$2 $3 $4 $5      // $6" >> PATH_TO_REPORTS/$1.txt
 }
 ```
-With this other function we can add easily a new mark to the report specified in the 1st argument. For example, if we write `amarks example math 1.5 2 exam` this line  `math 1.5 2 		// exam` will be added to `PATH_TO_REPORTS/example.txt`.
+With this other function we can add easily a new mark to the report specified in the 1st argument. For example, if we write `amarks example math 20 30 0.5 exam` this line  `math 20 30 0.5      // exam` will be added to `PATH_TO_REPORTS/example.txt`.
