@@ -21,7 +21,7 @@ english 6 10 0.4        // 1st exam
 math 40 40 0.5          // Exam
 physics 4 10 0.5        // Project
 ```
-The first line of the file sets the total that will be used to show your marks (10, 100... pi ;))
+The first line of the file sets the total that will be used to show your marks (10, 100... pi 😉)
 
 The format of the rest of lines is:
 ```
