@@ -4,28 +4,47 @@ import Modules.TerminalColors
 main :: IO ()
 main = do
   content <- getContents
-  let highestMark = read (head (lines content))
+  let highestMark = parseRational (head (lines content))
    in putStr $ unlines $ map (graph highestMark) (groupAndSumReports (format content))
 
-data Report = Report {subject :: String, mark :: Float, total :: Float, weight :: Float}
+data Report = Report {subject :: String, mark :: Rational, total :: Rational, weight :: Rational}
+
+parseRational :: String -> Rational
+parseRational s = case break (== '.') s of
+  (whole, "") -> fromInteger (read whole)
+  (whole, _ : frac) -> fromInteger (read (whole ++ frac)) / 10 ^ length frac
+
+showDecimal :: Int -> Rational -> String
+showDecimal digits r = sign ++ show whole ++ (if digits > 0 then "." ++ padded else "")
+  where
+    scaled = round (abs r * 10 ^ digits) :: Integer
+    (whole, frac) = scaled `divMod` (10 ^ digits)
+    padded = replicate (digits - length (show frac)) '0' ++ show frac
+    sign = if r < 0 && scaled /= 0 then "-" else ""
 
 format :: String -> [Report]
-format = map ((\(subject : mark : total : weight : _) -> Report subject (read mark) (read total) (read weight)) . words) . tail . lines
+format = map ((\(subject : mark : total : weight : _) -> Report subject (parseRational mark) (parseRational total) (parseRational weight)) . words) . tail . lines
 
 uniqueSubjects :: [Report] -> [String]
 uniqueSubjects = nub . map subject
 
-sumSubjectMarks :: [Report] -> Report
-sumSubjectMarks (report : reports) = foldl (\(Report s mk ttl w) (Report _ mk2 ttl2 w2) -> Report s (mk + mk2) (ttl + ttl2) (w + w2)) report reports
-
 groupBySubject :: [Report] -> [[Report]]
 groupBySubject reports = [[report | report <- reports, aSubject == subject report] | aSubject <- uniqueSubjects reports]
 
-groupAndSumReports :: [Report] -> [Report]
+type Summary = (String, Rational, Rational)
+
+sumSubjectMarks :: [Report] -> Summary
+sumSubjectMarks reports =
+  ( subject (head reports),
+    sum [mark r / total r * weight r | r <- reports],
+    sum (map weight reports)
+  )
+
+groupAndSumReports :: [Report] -> [Summary]
 groupAndSumReports reports = map sumSubjectMarks (groupBySubject reports)
 
-graph :: Float -> Report -> String
-graph highestMark (Report subj mk ttl weight) =
+graph :: Rational -> Summary -> String
+graph highestMark (subj, earnedFraction, weightSum) =
   subj
     ++ replicate (subjFieldLength - length subj) ' '
     ++ "0 ["
@@ -33,15 +52,16 @@ graph highestMark (Report subj mk ttl weight) =
     ++ colorString Bold Red Default (replicate nReds '|')
     ++ replicate (round graphLength - nReds - nGreens) ' '
     ++ "] "
-    ++ show highestMark
+    ++ showDecimal 2 highestMark
     ++ replicate (markFieldLength - 6) ' '
-    ++ colorString Bold Green Default (show totalMark)
-    ++ replicate (markFieldLength - length (show totalMark)) ' '
-    ++ colorString Bold Red Default (show $ ((ttl - mk) / ttl) * weight * highestMark)
+    ++ colorString Bold Green Default earned
+    ++ replicate (markFieldLength - length earned) ' '
+    ++ colorString Bold Red Default lost
   where
     subjFieldLength = 12
     markFieldLength = 15
-    totalMark = (mk / ttl) * weight * highestMark
     graphLength = 50
-    nGreens = round (((mk / ttl) * weight) * graphLength)
-    nReds = round (weight * graphLength) - nGreens
+    earned = showDecimal 2 (earnedFraction * highestMark)
+    lost = showDecimal 2 ((weightSum - earnedFraction) * highestMark)
+    nGreens = round (earnedFraction * graphLength)
+    nReds = round (weightSum * graphLength) - nGreens
